@@ -1,7 +1,7 @@
 {% if tags and tags.length %}
 <ul class="tags">
   {% for tag in tags %}
-    <li><a class="tag" href="{{ tag | tagUrl }}">{{ tag }}</a></li>
+    <li><a class="tag" href="{{ tag | tagUrl | url }}">{{ tag }}</a></li>
   {% endfor %}
 </ul>
 {% endif %}

@@ -9,7 +9,7 @@
     <div class="hero__actions">
       {% if demoUrl %}<a class="btn" href="{{ demoUrl }}">在线演示</a>{% endif %}
       {% if repoUrl %}<a class="btn btn--ghost" href="{{ repoUrl }}">源码仓库</a>{% endif %}
-      <a class="btn btn--ghost" href="/projects/">全部作品</a>
+      <a class="btn btn--ghost" href="{{ '/projects/' | url }}">全部作品</a>
     </div>
   </header>
   <div class="prose">{{ content | safe }}</div>

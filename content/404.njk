@@ -12,8 +12,8 @@ eleventyExcludeFromCollections: true
   <h1>这页不见了</h1>
   <p class="lede">地址可能已经更改，或者这篇文章从未存在过。</p>
   <div class="hero__actions">
-    <a class="btn" href="/">回到首页</a>
-    <a class="btn btn--ghost" href="/posts/">读文章</a>
+    <a class="btn" href="{{ '/' | url }}">回到首页</a>
+    <a class="btn btn--ghost" href="{{ '/posts/' | url }}">读文章</a>
   </div>
-  <p class="message-page__links">也可以试试 <a href="/search/">站内搜索</a>，或直接订阅 <a href="/feed.xml">RSS</a>。</p>
+  <p class="message-page__links">也可以试试 <a href="{{ '/search/' | url }}">站内搜索</a>，或直接订阅 <a href="{{ '/feed.xml' | url }}">RSS</a>。</p>
 </div>

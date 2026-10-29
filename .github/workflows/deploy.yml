@@ -33,6 +33,7 @@ jobs:
       - name: Build site
         env:
           SITE_URL: https://mettazeng.github.io/SoftwareEngineer
+          SITE_BASE: /SoftwareEngineer/
         run: npm run build
 
       - name: Configure Pages

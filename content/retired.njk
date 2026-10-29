@@ -16,8 +16,8 @@ eleventyExcludeFromCollections: true
   <h1>文章已撤回</h1>
   <p class="lede">《{{ gone.title }}》已于 {{ gone.retiredAt }} 撤回，这个地址不再提供内容。</p>
   <div class="hero__actions">
-    <a class="btn" href="/posts/">读其他文章</a>
-    <a class="btn btn--ghost" href="/">回到首页</a>
+    <a class="btn" href="{{ '/posts/' | url }}">读其他文章</a>
+    <a class="btn btn--ghost" href="{{ '/' | url }}">回到首页</a>
   </div>
-  <p class="message-page__links">如果你是从外部链接点进来的，可以到 <a href="/search/">搜索</a> 里找替代内容。</p>
+  <p class="message-page__links">如果你是从外部链接点进来的，可以到 <a href="{{ '/search/' | url }}">搜索</a> 里找替代内容。</p>
 </div>

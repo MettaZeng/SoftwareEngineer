@@ -16,8 +16,8 @@
   <div class="prose">{{ content | safe }}</div>
 
   <nav class="post-nav" aria-label="文章导航">
-    <a class="more" href="/posts/">← 全部文章</a>
-    <a class="more" href="/feed.xml">订阅 RSS</a>
+    <a class="more" href="{{ '/posts/' | url }}">← 全部文章</a>
+    <a class="more" href="{{ '/feed.xml' | url }}">订阅 RSS</a>
   </nav>
 
   {% include "components/giscus.njk" %}

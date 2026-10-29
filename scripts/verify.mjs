@@ -3,6 +3,8 @@ import { dirname, join, resolve } from "node:path";
 
 const siteDir = join(process.cwd(), "_site");
 const errors = [];
+// 子路径部署前缀（与 eleventy.config.js 的 pathPrefix 保持一致）
+const pathPrefix = process.env.SITE_BASE || "/";
 
 /** 产物断言：切片 S1–S6 的端到端检查 */
 const required = [
@@ -55,10 +57,15 @@ for (const file of listHtml(siteDir)) {
     const target = raw.split("#")[0].split("?")[0];
     if (!target) continue;
     const decoded = decodeURIComponent(target);
-    const base = target.startsWith("/") ? siteDir : dirname(file);
-    let candidate = decoded.endsWith("/")
-      ? join(base, `${decoded}index.html`)
-      : join(base, decoded);
+    // 去掉 pathPrefix 前缀，映射回 _site 内的真实文件路径
+    let relPath = decoded;
+    if (pathPrefix !== "/" && relPath.startsWith(pathPrefix)) {
+      relPath = relPath.slice(pathPrefix.length - 1); // 保留开头的 "/"
+    }
+    const base = relPath.startsWith("/") ? siteDir : dirname(file);
+    let candidate = relPath.endsWith("/")
+      ? join(base, `${relPath}index.html`)
+      : join(base, relPath);
     candidate = resolve(candidate);
     const ok =
       isFile(candidate) ||

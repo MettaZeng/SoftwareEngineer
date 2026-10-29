@@ -74,6 +74,8 @@ export default function (eleventyConfig) {
       data: "_data",
       output: "_site",
     },
+    // 子路径部署（GitHub Pages 项目站）：CI 设 SITE_BASE=/SoftwareEngineer/
+    pathPrefix: process.env.SITE_BASE || "/",
     templateFormats: ["md", "njk"],
     markdownTemplateEngine: "njk",
     htmlTemplateEngine: "njk",

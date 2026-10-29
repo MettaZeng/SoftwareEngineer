@@ -6,7 +6,7 @@ description: "站内全文搜索，索引由构建期生成。"
 ---
 
 {% block head %}
-<link rel="stylesheet" href="/pagefind/pagefind-ui.css">
+<link rel="stylesheet" href="{{ '/pagefind/pagefind-ui.css' | url }}">
 {% endblock %}
 
 <div class="shell shell--narrow search-page" data-pagefind-ignore>
@@ -19,7 +19,7 @@ description: "站内全文搜索，索引由构建期生成。"
 </div>
 
 {% block scripts %}
-<script src="/pagefind/pagefind-ui.js"></script>
+<script src="{{ '/pagefind/pagefind-ui.js' | url }}"></script>
 <script>
   window.addEventListener("DOMContentLoaded", function () {
     new PagefindUI({

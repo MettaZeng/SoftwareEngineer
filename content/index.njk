@@ -10,16 +10,16 @@ description: "教学笔记、架构随笔与作品集：把复杂的事情写清
   <h1>教书、写代码，<br>把两件事写清楚。</h1>
   <p class="hero__lede">{{ site.description }}</p>
   <div class="hero__actions">
-    <a class="btn" href="/posts/">读文章</a>
-    <a class="btn btn--ghost" href="/resume/">看简历</a>
+    <a class="btn" href="{{ '/posts/' | url }}">读文章</a>
+    <a class="btn btn--ghost" href="{{ '/resume/' | url }}">看简历</a>
   </div>
-  <p class="hero__meta">{{ collections.posts | length }} 篇文章 · {{ collections.projects | length }} 个作品 · <a href="/search/">站内搜索</a></p>
+  <p class="hero__meta">{{ collections.posts | length }} 篇文章 · {{ collections.projects | length }} 个作品 · <a href="{{ '/search/' | url }}">站内搜索</a></p>
 </section>
 
 <section class="section shell">
   <div class="section__head">
     <h2>最新文章</h2>
-    <a class="more" href="/posts/">全部文章 →</a>
+    <a class="more" href="{{ '/posts/' | url }}">全部文章 →</a>
   </div>
   <div class="post-list">
     {% for post in collections.posts | slice(0, 3) %}
@@ -31,7 +31,7 @@ description: "教学笔记、架构随笔与作品集：把复杂的事情写清
 <section class="section shell">
   <div class="section__head">
     <h2>作品</h2>
-    <a class="more" href="/projects/">全部作品 →</a>
+    <a class="more" href="{{ '/projects/' | url }}">全部作品 →</a>
   </div>
   <div class="project-grid">
     {% for project in collections.projects | slice(0, 3) %}
@@ -46,7 +46,7 @@ description: "教学笔记、架构随笔与作品集：把复杂的事情写清
   </div>
   <ul class="tags tags--cloud">
     {% for tag in collections.tagList %}
-      <li><a class="tag" href="{{ tag.url }}">{{ tag.name }}<span class="tag__count">{{ tag.count }}</span></a></li>
+      <li><a class="tag" href="{{ tag.url | url }}">{{ tag.name }}<span class="tag__count">{{ tag.count }}</span></a></li>
     {% endfor %}
   </ul>
 </section>
