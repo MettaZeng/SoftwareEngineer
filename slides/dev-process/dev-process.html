@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="engineering-whiteprint">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="x-content-type" content="presentation" />
+<meta name="x-presentation-version" content="1.0" />
+<meta name="x-presentation-indicator" content="deck-stage .slide" />
+<title>个人网站开发过程走查 · Metta Ling</title>
+<link rel="stylesheet" href="./_shared/fonts.css">
+<link rel="stylesheet" href="./_shared/base.css">
+<link rel="stylesheet" id="theme-link" href="./_shared/themes/engineering-whiteprint.css">
+<link rel="stylesheet" href="./_shared/animations/animations.css">
+<style>
+/* deck-local helpers */
+.t{width:100%;border-collapse:collapse;font-size:15px}
+.t th,.t td{padding:12px 16px;text-align:left;border-bottom:1px solid var(--border)}
+.t th{font-size:12px;text-transform:uppercase;letter-spacing:.1em;color:var(--text-3);font-weight:600}
+.t tr:hover td{background:var(--surface-2)}
+.t.sm{font-size:13.5px}
+.t.sm th,.t.sm td{padding:10px 14px}
+.flow{display:flex;align-items:stretch;gap:12px;margin-top:28px}
+.flow .node{flex:1;min-width:0;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px 14px;text-align:center;box-shadow:var(--shadow)}
+.flow .node h4{font-size:15px;margin:0 0 4px}
+.flow .node p{font-size:11.5px;color:var(--text-3);margin:0;line-height:1.5}
+.flow .arr{color:var(--text-3);font-size:24px;flex-shrink:0;align-self:center}
+.flow .node.hl{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 18%,transparent),var(--shadow)}
+.arch{margin-top:20px;display:grid;gap:18px}
+.arch .tier{display:grid;grid-template-columns:150px 1fr;align-items:stretch;gap:18px}
+.arch .tname{display:flex;align-items:center;justify-content:center;background:var(--surface-2);border-radius:var(--radius);padding:14px;font-weight:600;font-size:13px;color:var(--text-2);letter-spacing:.06em;text-align:center}
+.arch .cells{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+.arch .cell{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;text-align:center;box-shadow:var(--shadow)}
+.arch .cell h4{font-size:14px;margin:0 0 2px}
+.arch .cell p{font-size:11.5px;color:var(--text-3);margin:0}
+.arch .tier.hl .cell{border-top:3px solid var(--accent)}
+.uc{display:flex;gap:24px;margin-top:24px;align-items:stretch}
+.uc .actors{display:flex;flex-direction:column;gap:14px;width:200px;flex-shrink:0}
+.uc .actor{background:var(--surface);border:1px solid var(--border-strong);border-radius:var(--radius);padding:16px;text-align:center;box-shadow:var(--shadow)}
+.uc .actor h4{margin:0;font-size:15px}
+.uc .actor p{margin:2px 0 0;font-size:11px;color:var(--text-3)}
+.uc .sysbox{flex:1;border:2px dashed var(--border-strong);border-radius:var(--radius);padding:18px;display:grid;grid-template-columns:repeat(3,1fr);gap:10px;align-content:start}
+.uc .case{background:var(--surface-2);border:1px solid var(--border);border-radius:999px;padding:10px 14px;font-size:13px;text-align:center}
+.uc .case.ext{background:color-mix(in srgb,var(--accent) 8%,var(--surface));border-color:var(--accent)}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:26px 22px;margin-top:40px}
+.step{position:relative;padding:22px 24px;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);box-shadow:var(--shadow)}
+.step .num{position:absolute;top:-20px;left:20px;width:40px;height:40px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;box-shadow:var(--shadow)}
+.step h4{margin:14px 0 6px;font-size:16px}
+.step p{font-size:12.5px;color:var(--text-2);line-height:1.6;margin:0}
+.tagline{display:inline-block;margin-top:8px;font-size:11px;padding:3px 10px;border-radius:999px;background:var(--surface-2);color:var(--text-3)}
+pre.tree{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius);padding:22px 26px;font-size:15px;line-height:1.7;margin:0}
+</style>
+</head>
+<body data-themes="engineering-whiteprint,blueprint,scholar-teal,minimal-white" data-theme-base="./_shared/themes/">
+<deck-stage width="1920" height="1080">
+
+  <!-- 1. Cover -->
+  <section class="slide center tc" data-deck-label="封面">
+    <div style="max-width:900px;margin:0 auto">
+      <p class="kicker anim-fade-down" data-anim="fade-down">Metta Ling · 工程走查</p>
+      <h1 class="h1 anim-fade-up" data-anim="fade-up" style="font-size:88px">个人网站<br>开发过程走查</h1>
+      <div class="divider-accent" style="margin:28px auto"></div>
+      <p class="lede anim-fade-up" data-anim="fade-up" style="margin:0 auto">需求分析 → 架构设计 → 契约落地<br>一个"无后端"个人站从想法到切片的完整推导</p>
+      <div class="deck-footer"><span class="dim2">Metta Ling · 2026-10</span><span class="slide-number" data-current="1" data-total="23"></span></div>
+    </div>
+    <div class="notes">开场：这是一次开发过程的完整走查。案例是教师个人主页（博客+作品集+简历），核心约束只有一句——改文章只改 Git，不碰服务器。我们会按活动图逐节点推导，看这个约束如何一路决定架构。</div>
+  </section>
+
+  <!-- 2. TOC -->
+  <section class="slide" data-deck-label="目录">
+    <p class="eyebrow">Contents · 目录</p>
+    <h2 class="h2">四部分，十四张图与表</h2>
+    <div class="grid g2 mt-l anim-stagger-list" data-anim-target>
+      <div class="card"><div class="row"><div class="h3 dim2" style="width:56px">01</div><div><h4>需求分析</h4><p class="dim">用例图 · 领域类图 · 顺序图 · 状态图</p></div></div></div>
+      <div class="card"><div class="row"><div class="h3 dim2" style="width:56px">02</div><div><h4>架构设计</h4><p class="dim">逻辑 / 开发 / 物理 / 运行四视图 + 一致性核对</p></div></div></div>
+      <div class="card"><div class="row"><div class="h3 dim2" style="width:56px">03</div><div><h4>复用、约束与契约</h4><p class="dim">选型与回退 · 七类约束检查 · 三层接口契约</p></div></div></div>
+      <div class="card"><div class="row"><div class="h3 dim2" style="width:56px">04</div><div><h4>脚手架、切片与详细设计</h4><p class="dim">目录工具链 · S1–S6 纵切 · 走查结论</p></div></div></div>
+    </div>
+    <div class="deck-footer"><span class="dim2">个人网站开发过程走查</span><span class="slide-number" data-current="2" data-total="23"></span></div>
+    <div class="notes">目录：按活动图顺序推进——先把需求画清楚，再做四视图架构，然后落地约束与契约，最后脚手架加切片。每一部分都有明确产出。</div>
+  </section>
+
+  <!-- 3. Roadmap -->
+  <section class="slide" data-deck-label="走查路线">
+    <p class="kicker">Roadmap · 活动图</p>
+    <h2 class="h2">走查路线：每个节点都有产出</h2>
+    <div class="flow" style="flex-wrap:wrap">
+      <div class="node"><h4>需求与用例</h4><p>用例图 + 清单<br>+ 非功能约束</p></div><div class="arr">→</div>
+      <div class="node"><h4>领域建模</h4><p>领域类图</p></div><div class="arr">→</div>
+      <div class="node"><h4>交互与生命周期</h4><p>顺序图 + 状态图</p></div><div class="arr">→</div>
+      <div class="node"><h4>架构四视图</h4><p>逻辑/开发/物理/运行</p></div><div class="arr">→</div>
+      <div class="node"><h4>复用选型</h4><p>选型表 + 一次回退</p></div><div class="arr">→</div>
+      <div class="node"><h4>约束检查</h4><p>七类检查表</p></div>
+    </div>
+    <div class="flow" style="flex-wrap:wrap">
+      <div class="node"><h4>契约骨架</h4><p>三层契约 + 权限矩阵</p></div><div class="arr">→</div>
+      <div class="node"><h4>脚手架</h4><p>目录与工具链</p></div><div class="arr">→</div>
+      <div class="node"><h4>切片</h4><p>S1–S6 纵切</p></div><div class="arr">→</div>
+      <div class="node"><h4>详细设计</h4><p>S1 内容模型 + 构件</p></div><div class="arr">→</div>
+      <div class="node hl"><h4>一致性核对</h4><p>核对表 + 缺口</p></div>
+    </div>
+    <div class="deck-footer"><span class="dim2">第 0 节 · 走查路线</span><span class="slide-number" data-current="3" data-total="23"></span></div>
+    <div class="notes">这是活动图的全貌：十一个节点，每个节点对应一份产出物。后面我们逐节点展开。注意最后一格"一致性核对"——它抓出了真缺口，是走查里最有价值的环节之一。</div>
+  </section>
+
+  <!-- 4. Section divider -->
+  <section class="slide center tc" data-deck-label="一、需求分析">
+    <div style="max-width:780px;margin:0 auto">
+      <p class="kicker anim-fade-down" data-anim="fade-down">Part · 01</p>
+      <h1 class="h1 anim-rise-in" data-anim="rise-in" style="font-size:104px">需求<span class="gradient-text">分析</span></h1>
+      <div class="divider-accent" style="margin:24px auto"></div>
+      <p class="lede" style="margin:0 auto">用例图 · 领域类图 · 顺序图 · 状态图<br>需求阶段的两个决策，直接决定后面没有后端。</p>
+    </div>
+    <div class="notes">第一部分：需求分析。三张图加一张状态图。重点不是画图本身，而是两个边界决策。</div>
+  </section>
+
+  <!-- 5. Use case diagram -->
+  <section class="slide" data-deck-label="用例图">
+    <p class="kicker">需求 · 用例图</p>
+    <h2 class="h2">三个参与者，十个用例</h2>
+    <div class="uc anim-stagger-list" data-anim-target>
+      <div class="actors">
+        <div class="actor"><h4>访客</h4><p>未登录 · 只读</p></div>
+        <div class="actor"><h4>站主</h4><p>写 Markdown · 发布</p></div>
+        <div class="actor"><h4>CI 机器人</h4><p>构建并发布（与站主共用用例，权限不同）</p></div>
+      </div>
+      <div class="sysbox">
+        <div class="case">浏览文章列表</div>
+        <div class="case ext">阅读文章详情 «include» 上报</div>
+        <div class="case">按标签筛选</div>
+        <div class="case">站内搜索</div>
+        <div class="case">订阅 RSS</div>
+        <div class="case ext">发表评论 «extend» 阅读</div>
+        <div class="case">查看作品集与简历</div>
+        <div class="case">编写 Markdown 文章</div>
+        <div class="case">构建并发布站点</div>
+      </div>
+    </div>
+    <div class="grid g2 mt-l">
+      <div class="card card-accent"><h4>评论 «extend» 阅读</h4><p class="dim">评论不是必走流程，只在访客选择扩展时发生。</p></div>
+      <div class="card card-accent"><h4>阅读 «include» 上报统计</h4><p class="dim">每次阅读都必然发生，所以是 include。</p></div>
+    </div>
+    <div class="deck-footer"><span class="dim2">第 1 节 · 用例图</span><span class="slide-number" data-current="5" data-total="23"></span></div>
+    <div class="notes">用例图只讲两个关系：extend 表示可选扩展（评论），include 表示必然发生（统计上报）。站主和 CI 机器人共用"构建并发布"，区别只在权限。</div>
+  </section>
+
+  <!-- 6. Domain class diagram -->
+  <section class="slide" data-deck-label="领域类图">
+    <p class="kicker">需求 · 概念模型</p>
+    <h2 class="h2">五个类，一个被刻意排除</h2>
+    <div class="grid g2 mt-l">
+      <div class="card anim-fade-left" data-anim="fade-left">
+        <h3>领域类</h3>
+        <table class="t sm mt-m">
+          <thead><tr><th>类</th><th>关键属性</th></tr></thead>
+          <tbody>
+            <tr><td><b>Post</b></td><td>slug、title、date、summary、draft、cover</td></tr>
+            <tr><td><b>Tag</b></td><td>name、slug（与 Post N:N）</td></tr>
+            <tr><td><b>Project</b></td><td>name、intro、stack、repoUrl、demoUrl</td></tr>
+            <tr><td><b>Page</b></td><td>title、body（关于、简历等固定页）</td></tr>
+            <tr><td><b>SiteConfig</b></td><td>title、author、baseUrl、feedPath</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card anim-fade-right" data-anim="fade-right" style="border-top:3px solid var(--accent)">
+        <h3>边界决策</h3>
+        <p class="lede" style="font-size:19px"><code>Comment</code> <b>不作为本站类</b>——由外部构件 Giscus 承担。</p>
+        <ul class="mt-m">
+          <li>— 本站模型里<b>不建表、不做鉴权</b></li>
+          <li>— 需求阶段就定，直接决定后续<b>没有后端</b></li>
+          <li>— Post → Comment 只是"外部关联 Giscus"</li>
+        </ul>
+        <p class="dim mt-l">URL 由 slug 决定：<code class="mono">/posts/{slug}/</code></p>
+      </div>
+    </div>
+    <div class="deck-footer"><span class="dim2">第 2 节 · 领域类图</span><span class="slide-number" data-current="6" data-total="23"></span></div>
+    <div class="notes">领域模型五个类很常规，关键是被排除的那个：Comment。把它判给外部构件，是全文第一个决定性决策——没有评论存储，就不需要数据库，后端就此消失。</div>
+  </section>
+
+  <!-- 7. Sequence + State -->
+  <section class="slide" data-deck-label="顺序图与状态图">
+    <p class="kicker">需求 · 交互与生命周期</p>
+    <h2 class="h2">整条时序里，没有本站服务端</h2>
+    <div class="grid g2 mt-l">
+      <div class="card anim-fade-left" data-anim="fade-left">
+        <h3>顺序图 · 访客阅读一篇文章</h3>
+        <table class="t sm mt-m">
+          <tbody>
+            <tr><td class="mono">1</td><td>访客 → 静态产物：GET /posts/xxx/ → 返回 HTML</td></tr>
+            <tr><td class="mono">2</td><td>访客 → Umami：上报 pageview（无 Cookie）</td></tr>
+            <tr><td class="mono">3</td><td>访客 → Pagefind：输入关键词 → 匹配列表</td></tr>
+            <tr><td class="mono">4</td><td>访客 → Giscus：加载评论 → GitHub 登录后发表</td></tr>
+          </tbody>
+        </table>
+        <p class="dim mt-m">四个参与者全是<b>静态文件或第三方</b>——"无后端"在需求图上的直接体现。</p>
+      </div>
+      <div class="card anim-fade-right" data-anim="fade-right" style="border-top:3px solid var(--warn)">
+        <h3>状态图 · 文章生命周期</h3>
+        <div class="flow" style="margin-top:18px;flex-wrap:wrap;gap:8px">
+          <div class="node" style="padding:12px"><h4 style="font-size:13px">草稿</h4><p>draft: true</p></div><div class="arr">→</div>
+          <div class="node" style="padding:12px"><h4 style="font-size:13px">已发布</h4><p>提交 main 且构建成功</p></div><div class="arr">→</div>
+          <div class="node" style="padding:12px"><h4 style="font-size:13px">已归档</h4><p>archived: true</p></div>
+        </div>
+        <p class="lede mt-l" style="font-size:18px">撤回 → 旧 URL 返回 <b>410</b><br><span class="dim" style="font-size:15px">这条规则不是从架构图来的，是从状态图来的——它直接生成了契约中的一条约定。</span></p>
+      </div>
+    </div>
+    <div class="deck-footer"><span class="dim2">第 3 节 · 顺序图与状态图</span><span class="slide-number" data-current="7" data-total="23"></span></div>
+    <div class="notes">左：阅读时序，四个参与者没有一个是本站服务端。右：文章状态机。重点讲"撤回→410"——没有状态图，这条契约没人会想到。状态图不是装饰，它在生成需求。</div>
+  </section>
+
+  <!-- 8. Section divider -->
+  <section class="slide center tc" data-deck-label="二、架构设计">
+    <div style="max-width:780px;margin:0 auto">
+      <p class="kicker anim-fade-down" data-anim="fade-down">Part · 02</p>
+      <h1 class="h1 anim-rise-in" data-anim="rise-in" style="font-size:104px">架构<span class="gradient-text">设计</span></h1>
+      <div class="divider-accent" style="margin:24px auto"></div>
+      <p class="lede" style="margin:0 auto">逻辑 · 开发 · 物理 · 运行——四视图各管一件事，<br>最后必须互相核对。</p>
+    </div>
+    <div class="notes">第二部分：架构四视图。逻辑视图管构件与连接件，开发视图管包与依赖红线，物理视图管部署单元，运行视图管时序。四张图画完不算完，必须一致性核对。</div>
+  </section>
+
+  <!-- 9. Logical view -->
+  <section class="slide" data-deck-label="逻辑视图">
+    <p class="kicker">架构 · 逻辑视图</p>
+    <h2 class="h2">构件与连接件：内容只进不出</h2>
+    <div class="arch anim-stagger-list" data-anim-target>
+      <div class="tier"><div class="tname">内容源与模板</div>
+        <div class="cells">
+          <div class="cell"><h4>Markdown 内容</h4><p>posts / projects / pages</p></div>
+          <div class="cell"><h4>模板与组件</h4><p>layouts + components</p></div>
+        </div>
+      </div>
+      <div class="tier hl"><div class="tname">构建期</div>
+        <div class="cells">
+          <div class="cell"><h4>静态站点构建器</h4><p>文件读取 → 产出 HTML</p></div>
+          <div class="cell"><h4>搜索索引 Pagefind</h4><p>构建时生成索引</p></div>
+        </div>
+      </div>
+      <div class="tier"><div class="tname">托管与分发</div>
+        <div class="cells">
+          <div class="cell"><h4>静态产物</h4><p>HTML + 指纹资产</p></div>
+          <div class="cell"><h4>CDN 边缘</h4><p>HTTPS → 访客</p></div>
+        </div>
+      </div>
+      <div class="tier"><div class="tname">外部构件</div>
+        <div class="cells">
+          <div class="cell"><h4>评论 Giscus</h4><p>外部 API</p></div>
+          <div class="cell"><h4>统计 Umami</h4><p>事件上报</p></div>
+        </div>
+      </div>
+    </div>
+    <p class="dim mt-m">约束：内容只在 Git · 模板不直读内容 · 评论不出本站模型</p>
+    <div class="deck-footer"><span class="dim2">第 4 节 · 逻辑视图</span><span class="slide-number" data-current="9" data-total="23"></span></div>
+    <div class="notes">逻辑视图四层：内容源、构建期、托管分发、外部构件。三条约束记在图上：内容只在 Git、模板不直读内容、评论不出本站模型。这三条后面会变成 lint 规则。</div>
+  </section>
+
+  <!-- 10. Development view -->
+  <section class="slide" data-deck-label="开发视图">
+    <p class="kicker">架构 · 开发视图</p>
+    <h2 class="h2">五个包，一条红线</h2>
+    <div class="card mt-l" style="padding:4px 12px">
+      <table class="t">
+        <thead><tr><th>包</th><th>职责</th><th>允许依赖</th></tr></thead>
+        <tbody>
+          <tr><td><code class="mono">content/</code></td><td>Markdown 源（posts / projects / pages）</td><td>无（纯数据）</td></tr>
+          <tr><td><code class="mono">layouts/</code></td><td>页面骨架</td><td><code class="mono">components/</code>、<code class="mono">lib/</code> 纯函数</td></tr>
+          <tr><td><code class="mono">components/</code></td><td>展示型组件，只接收 props</td><td>不依赖 <code class="mono">content/</code>、不读文件</td></tr>
+          <tr><td><code class="mono">lib/</code></td><td>读取、路由、SEO、feed</td><td><code class="mono">content/</code></td></tr>
+          <tr><td><code class="mono">scripts/</code></td><td>构建与检查脚本</td><td><code class="mono">lib/</code>、<code class="mono">content/</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="card mt-l" style="border-left:4px solid var(--bad)">
+      <h4 style="color:var(--bad)">红线</h4>
+      <p class="dim" style="margin:0"><code class="mono">components/</code> 与 <code class="mono">layouts/</code> 中<b>不得出现 <code class="mono">fs.readFile</code></b>——视图层永远拿不到文件系统。</p>
+    </div>
+    <div class="deck-footer"><span class="dim2">第 5 节 · 开发视图</span><span class="slide-number" data-current="10" data-total="23"></span></div>
+    <div class="notes">开发视图把逻辑构件落到包结构。依赖方向单一：lib 读 content，layouts 用 lib 纯函数，components 只吃 props。红线只有一条，但足以保证"模板不直读内容"可执行、可检查。</div>
+  </section>
+
+  <!-- 11. Physical view -->
+  <section class="slide" data-deck-label="物理视图">
+    <p class="kicker">架构 · 物理视图</p>
+    <h2 class="h2">六个部署单元，一条安全边界</h2>
+    <div class="arch anim-stagger-list" data-anim-target>
+      <div class="tier"><div class="tname">开发机</div>
+        <div class="cells">
+          <div class="cell"><h4>Git 仓库</h4><p>内容 + 模板的唯一真相（开发机 / GitHub）</p></div>
+        </div>
+      </div>
+      <div class="tier hl"><div class="tname">托管平台</div>
+        <div class="cells">
+          <div class="cell"><h4>CI 构建</h4><p>每次推送触发</p></div>
+          <div class="cell"><h4>对象存储</h4><p>带指纹的静态产物</p></div>
+          <div class="cell"><h4>CDN 边缘</h4><p>承担全部访客流量</p></div>
+        </div>
+      </div>
+      <div class="tier"><div class="tname">第三方</div>
+        <div class="cells">
+          <div class="cell"><h4>GitHub Issues</h4><p>评论区数据</p></div>
+          <div class="cell"><h4>Umami 实例</h4><p>访问统计（自建 VPS）</p></div>
+        </div>
+      </div>
+    </div>
+    <p class="lede mt-l" style="font-size:19px">物理图上"<b>浏览器直连第三方</b>"这条线，就是安全边界——评论与统计<b>不经过本站，也不该经过</b>。</p>
+    <div class="deck-footer"><span class="dim2">第 6 节 · 物理视图</span><span class="slide-number" data-current="11" data-total="23"></span></div>
+    <div class="notes">物理视图六个部署单元。关键链路：git push → CI → 对象存储 → CDN 回源 → 访客。访客浏览器另外直连 GitHub 和 Umami——这条直连线就是安全边界，不是偷懒，是刻意设计。</div>
+  </section>
+
+  <!-- 12. Runtime view -->
+  <section class="slide" data-deck-label="运行视图">
+    <p class="kicker">架构 · 运行视图</p>
+    <h2 class="h2">发布与访问：两条时序</h2>
+    <div class="grid g2 mt-l">
+      <div class="card anim-fade-left" data-anim="fade-left">
+        <h3>发布流程（站主 → CDN 生效）</h3>
+        <table class="t sm mt-m">
+          <tbody>
+            <tr><td class="mono">1</td><td>git push（Markdown 变更）</td></tr>
+            <tr><td class="mono">2</td><td>Webhook 触发 CI 构建</td></tr>
+            <tr><td class="mono">3</td><td>front-matter 校验 · 构建 · 死链检查</td></tr>
+            <tr><td class="mono">4a</td><td><b>通过</b> → 上传产物（指纹命名）→ 失效旧入口 → 部署成功 + 预览链接</td></tr>
+            <tr><td class="mono">4b</td><td><b>失败</b> → 构建失败，<b>线上产物不变</b></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card anim-fade-right" data-anim="fade-right">
+        <h3>访客访问（缓存命中 / 未命中）</h3>
+        <table class="t sm mt-m">
+          <tbody>
+            <tr><td class="mono">1</td><td>访客 → CDN 边缘：GET /posts/xxx/</td></tr>
+            <tr><td class="mono">2a</td><td><b>边缘命中</b> → 200 直接返回</td></tr>
+            <tr><td class="mono">2b</td><td><b>未命中</b> → 回源对象存储 → 200 + 边缘缓存</td></tr>
+          </tbody>
+        </table>
+        <div class="mt-l" style="text-align:center;padding:18px;background:var(--surface-2);border-radius:var(--radius)">
+          <div style="font-size:56px;font-weight:800;line-height:1" class="gradient-text">≥ 95%</div>
+          <p class="dim" style="margin:6px 0 0">边缘命中率目标</p>
+        </div>
+      </div>
+    </div>
+    <div class="deck-footer"><span class="dim2">第 7 节 · 运行视图</span><span class="slide-number" data-current="12" data-total="23"></span></div>
+    <div class="notes">运行视图两条时序。发布侧的关键是 alt 分支：校验失败时线上产物不变——坏内容永远到不了线上。访问侧给出量化目标：边缘命中率 ≥ 95%。</div>
+  </section>
+
+  <!-- 13. Consistency check -->
+  <section class="slide" data-deck-label="四视图一致性核对">
+    <p class="kicker">架构 · 一致性核对</p>
+    <h2 class="h2">四张图互相对账，抓出真缺口</h2>
+    <div class="card mt-l" style="padding:4px 12px">
+      <table class="t">
+        <thead><tr><th style="width:34%">核对项</th><th>结果</th></tr></thead>
+        <tbody>
+          <tr><td>逻辑图每个构件 → 开发图有包</td><td>内容→<code class="mono">content/</code>、构建器→<code class="mono">lib/</code>+<code class="mono">scripts/</code>、搜索→Pagefind 插件、评论/统计→外部</td></tr>
+          <tr><td>每个构件 → 物理图有部署单元</td><td>静态产物→对象存储+CDN、评论→GitHub、统计→Umami</td></tr>
+          <tr><td>每条运行消息 → 有连接件</td><td>Git 提交、构建调用、HTTPS、外部 API</td></tr>
+          <tr><td><b>缺口检查</b></td><td><b>逻辑图有"统计"，物理图必须有 Umami，运行图必须有事件上报——第一版漏了，已补上</b></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="lede mt-l" style="font-size:19px">三张图对不上，说明<b>架构没落地</b>，不是画错图。</p>
+    <div class="deck-footer"><span class="dim2">第 8 节 · 一致性核对</span><span class="slide-number" data-current="13" data-total="23"></span></div>
+    <div class="notes">一致性核对是四视图的收尾。真实发生的缺口：统计构件在逻辑、物理、运行三张图里对不上。这不是画图失误，是架构没落地——核对表逼着你补上。</div>
+  </section>
+
+  <!-- 14. Section divider -->
+  <section class="slide center tc" data-deck-label="三、复用、约束与契约">
+    <div style="max-width:820px;margin:0 auto">
+      <p class="kicker anim-fade-down" data-anim="fade-down">Part · 03</p>
+      <h1 class="h1 anim-rise-in" data-anim="rise-in" style="font-size:88px">复用 · 约束 · <span class="gradient-text">契约</span></h1>
+      <div class="divider-accent" style="margin:24px auto"></div>
+      <p class="lede" style="margin:0 auto">选型会回退，约束要可检查，契约没有后端也要有三层。</p>
+    </div>
+    <div class="notes">第三部分：把架构变成可执行的东西。选型不是一次选对，约束不是口头约定，契约不是后端专利。</div>
+  </section>
+
+  <!-- 15. Selection table -->
+  <section class="slide" data-deck-label="复用选型">
+    <p class="kicker">复用 · 选型表</p>
+    <h2 class="h2">六个可替换点，一次回退</h2>
+    <div class="card mt-l" style="padding:4px 12px">
+      <table class="t sm">
+        <thead><tr><th>可替换点</th><th>候选</th><th>选定</th><th>理由</th></tr></thead>
+        <tbody>
+          <tr><td>构建器</td><td>Hugo / Eleventy / Astro / Next</td><td><b>Eleventy</b></td><td>零运行时、构建秒级、输出纯静态</td></tr>
+          <tr><td>托管</td><td>Netlify / Vercel / 对象存储+CDN</td><td><b>静态托管</b></td><td>免费额度、PR 预览、自带 CDN</td></tr>
+          <tr><td>搜索</td><td>Pagefind / Algolia</td><td><b>Pagefind</b></td><td>构建时生成索引，无 API key、无外部依赖</td></tr>
+          <tr><td>评论</td><td>Giscus / Disqus</td><td><b>Giscus</b></td><td>无广告，数据在 GitHub Issues，符合"数据自持"</td></tr>
+          <tr><td>统计</td><td>Google Analytics / Umami</td><td><b>Umami</b></td><td>无 Cookie、轻量，符合"不采集个人信息"</td></tr>
+          <tr><td>图片</td><td>图片 CDN / 构建时压缩</td><td><b>构建时 sharp</b></td><td>少一个外部依赖</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="card mt-l" style="border-left:4px solid var(--warn)">
+      <h4 style="color:var(--warn)">一次回退</h4>
+      <p class="dim" style="margin:0">初选 <b>Google Analytics</b>，与"不采集个人信息"冲突 → 换 <b>Umami</b>。这正是活动图里「与架构约束冲突 → 换构件」那条边。</p>
+    </div>
+    <div class="deck-footer"><span class="dim2">第 9 节 · 可替换点与选型</span><span class="slide-number" data-current="15" data-total="23"></span></div>
+    <div class="notes">六个可替换点各自有候选与理由。重点讲回退：GA 初选后与隐私约束冲突，换成 Umami。选型表要留"回退"的位置——第一次选对是运气，能回退才是流程。</div>
+  </section>
+
+  <!-- 16. Constraint check -->
+  <section class="slide" data-deck-label="架构约束检查">
+    <p class="kicker">约束 · 七类检查</p>
+    <h2 class="h2">每条约束，都要配检查手段</h2>
+    <div class="card mt-l" style="padding:4px 12px">
+      <table class="t sm">
+        <thead><tr><th style="width:16%">类别</th><th>本项目约束</th><th>检查手段</th></tr></thead>
+        <tbody>
+          <tr><td><b>分层依赖</b></td><td>模板/组件不得直读 <code class="mono">content/</code></td><td>ESLint <code class="mono">no-restricted-imports</code> + 自定义 lint 禁 <code class="mono">fs</code></td></tr>
+          <tr><td><b>单一出口</b></td><td>所有数据经 <code class="mono">lib/posts</code> 获取</td><td>代码审查 + grep <code class="mono">fs.readFile</code></td></tr>
+          <tr><td><b>幂等</b></td><td>同一 commit 重复构建产物一致</td><td>CI 构建两次比对 hash</td></tr>
+          <tr><td><b>无状态</b></td><td>托管无会话、无服务端状态</td><td>架构评审</td></tr>
+          <tr><td><b>权限</b></td><td>部署令牌只授单仓库；评论写权限交 GitHub 身份</td><td>令牌 scope 审查</td></tr>
+          <tr><td><b>性能</b></td><td>单页 HTML ≤ 100 KB、图片 WebP + 显式宽高</td><td>Lighthouse CI 门槛</td></tr>
+          <tr><td><b>数据唯一出口</b></td><td>内容只在 Git，产物不手改</td><td>发布流程比对</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="deck-footer"><span class="dim2">第 10 节 · 架构约束检查</span><span class="slide-number" data-current="16" data-total="23"></span></div>
+    <div class="notes">七类约束，每类都配了可执行的检查手段：lint 规则、CI 双构建比对 hash、Lighthouse 门槛、令牌 scope 审查。约束没有检查手段就是口号。</div>
+  </section>
+
+  <!-- 17. Contract -->
+  <section class="slide" data-deck-label="接口契约">
+    <p class="kicker">契约 · 三层 + 权限</p>
+    <h2 class="h2">没有后端 API，契约照样有三层</h2>
+    <div class="grid g2 mt-l">
+      <div class="card anim-fade-left" data-anim="fade-left">
+        <h3>三层契约</h3>
+        <table class="t sm mt-m">
+          <thead><tr><th>层</th><th>内容与载体</th></tr></thead>
+          <tbody>
+            <tr><td><b>内容契约</b></td><td>front-matter：<code class="mono">title/date/tags/draft/slug/cover</code><br>JSON Schema，缺字段构建失败</td></tr>
+            <tr><td><b>URL 契约</b></td><td><code class="mono">/posts/{slug}/</code> · <code class="mono">/tags/{tag}/</code> · <code class="mono">/feed.xml</code> · <code class="mono">/sitemap.xml</code><br>路由规则表 + 301 迁移表</td></tr>
+            <tr><td><b>外部契约</b></td><td>Giscus 参数（repo/category/mapping）<br>Umami 事件名（pageview/share/outbound）</td></tr>
+          </tbody>
+        </table>
+        <p class="dim mt-m">错误约定：404 页面、<b>410 弃用页</b>（来自状态图"撤回"）、RSS 必须通过 feed 校验器。</p>
+      </div>
+      <div class="card anim-fade-right" data-anim="fade-right">
+        <h3>权限矩阵</h3>
+        <table class="t sm mt-m">
+          <thead><tr><th>主体</th><th>认证方式</th><th>边界</th></tr></thead>
+          <tbody>
+            <tr><td>访客</td><td>无</td><td>只读</td></tr>
+            <tr><td>站主</td><td>GitHub 身份</td><td>可写 Git</td></tr>
+            <tr><td>CI 机器人</td><td>部署令牌（单仓库）</td><td>只构建发布</td></tr>
+            <tr><td>评论者</td><td>GitHub OAuth</td><td>只在自己权限内写评论</td></tr>
+          </tbody>
+        </table>
+        <p class="dim mt-l">静态站的安全模型：<b>能写什么，全由第三方身份决定</b>；本站不持有任何凭证。</p>
+      </div>
+    </div>
+    <div class="deck-footer"><span class="dim2">第 11 节 · 全局接口契约</span><span class="slide-number" data-current="17" data-total="23"></span></div>
+    <div class="notes">契约三层：内容契约靠 JSON Schema 在构建期强制；URL 契约是公开承诺，改动要走 301 迁移表；外部契约封装在组件常量里。注意 410 弃用页——它来自需求阶段的状态图，前后闭环了。</div>
+  </section>
+
+  <!-- 18. Section divider -->
+  <section class="slide center tc" data-deck-label="四、脚手架、切片与详细设计">
+    <div style="max-width:900px;margin:0 auto">
+      <p class="kicker anim-fade-down" data-anim="fade-down">Part · 04</p>
+      <h1 class="h1 anim-rise-in" data-anim="rise-in" style="font-size:80px">脚手架 · 切片 · <span class="gradient-text">详细设计</span></h1>
+      <div class="divider-accent" style="margin:24px auto"></div>
+      <p class="lede" style="margin:0 auto">从空仓库到六个端到端切片，<br>每片都可独立验收。</p>
+    </div>
+    <div class="notes">第四部分：落地。脚手架给目录和工具链，切片按用例纵切保证每片端到端，详细设计以 S1 为例展示模板。</div>
+  </section>
+
+  <!-- 19. Scaffold -->
+  <section class="slide" data-deck-label="脚手架">
+    <p class="kicker">落地 · 脚手架</p>
+    <h2 class="h2">目录即架构</h2>
+    <div class="grid g2 mt-l">
+      <div class="card anim-fade-left" data-anim="fade-left">
+<pre class="tree mono">content/      ← Markdown 源（posts/projects/pages）
+layouts/      ← 页面骨架
+components/   ← 展示型组件（只收 props）
+lib/          ← 读取 · 路由 · SEO · feed
+scripts/      ← 构建与检查脚本
+static/       ← 静态资产
+
+package.json  ← build / serve / lint / check
+.github/workflows/deploy.yml</pre>
+      </div>
+      <div class="card anim-fade-right" data-anim="fade-right">
+        <h3>必备能力</h3>
+        <ul class="mt-m">
+          <li>— front-matter 校验（缺字段构建失败）</li>
+          <li>— 死链检查（lychee）</li>
+          <li>— Lighthouse CI 性能门槛</li>
+          <li>— PR 预览部署</li>
+          <li>— 404 页 · RSS · sitemap</li>
+        </ul>
+        <div class="card mt-l" style="background:var(--surface-2);box-shadow:none">
+          <h4>完成标志</h4>
+          <p class="dim" style="margin:0">本地 <code class="mono">npm run build</code> 出产物，<br>CI 能出预览链接。</p>
+        </div>
+      </div>
+    </div>
+    <div class="deck-footer"><span class="dim2">第 12 节 · 脚手架</span><span class="slide-number" data-current="19" data-total="23"></span></div>
+    <div class="notes">脚手架不是随便建目录——它就是开发视图的物化：每个包对应一个目录，红线由 lint 和脚本把守。完成标志很具体：本地能构建、CI 能出预览链接。</div>
+  </section>
+
+  <!-- 20. Slices -->
+  <section class="slide" data-deck-label="切片">
+    <p class="kicker">落地 · 按用例纵切</p>
+    <h2 class="h2">六个切片，每片端到端可验收</h2>
+    <div class="steps anim-stagger-list" data-anim-target>
+      <div class="step"><div class="num">S1</div><h4>首页 + 列表 + 详情</h4><p>访问 <code class="mono">/</code> 看到 3 篇文章 → 点进详情看到正文</p></div>
+      <div class="step"><div class="num">S2</div><h4>标签页 + RSS + sitemap</h4><p><code class="mono">/tags/教学/</code> 列出对应文章；<code class="mono">/feed.xml</code> 通过校验器</p></div>
+      <div class="step"><div class="num">S3</div><h4>搜索</h4><p>输入关键词出结果，索引来自真实构建</p></div>
+      <div class="step"><div class="num">S4</div><h4>作品集 + 简历</h4><p>页面可访问、无死链</p></div>
+      <div class="step"><div class="num">S5</div><h4>评论（外部构件）</h4><p>发一条评论，GitHub 出现对应 discussion</p></div>
+      <div class="step"><div class="num">S6</div><h4>统计 + 404 + 301</h4><p>造一个旧 URL，跳转到新地址</p></div>
+    </div>
+    <p class="dim mt-l">S1 四项端到端检查：验收脚本可执行 · 无 mock 与 TODO · 产物文件真实存在 · 坏路径 <code class="mono">/nope</code> 返回 404</p>
+    <div class="deck-footer"><span class="dim2">第 13 节 · 切片</span><span class="slide-number" data-current="20" data-total="23"></span></div>
+    <div class="notes">切片按用例纵切，不按层横切。每片都有可执行的验收脚本——"当访问 / 时应看到 3 篇文章"这种句式。S5 的验收甚至跨到 GitHub：发一条评论，看 discussion 是否出现。</div>
+  </section>
+
+  <!-- 21. Detailed design S1 -->
+  <section class="slide" data-deck-label="详细设计 S1">
+    <p class="kicker">落地 · 详细设计（S1 示例）</p>
+    <h2 class="h2">一个切片的设计模板</h2>
+    <div class="card mt-l" style="padding:4px 12px">
+      <table class="t">
+        <thead><tr><th style="width:18%">项</th><th>内容</th></tr></thead>
+        <tbody>
+          <tr><td><b>内容模型</b></td><td><code class="mono">content/posts/*.md</code>，permalink <code class="mono">/posts/{slug}/</code>，列表每页 10 篇</td></tr>
+          <tr><td><b>构件</b></td><td><code class="mono">Layout / PostList / PostCard / TagList / SEO</code>，只接收 props</td></tr>
+          <tr><td><b>渲染</b></td><td>构建时生成，无运行时；缓存靠指纹文件名 + CDN TTL</td></tr>
+          <tr><td><b>约束落地</b></td><td>图片缺 <code class="mono">alt</code> 构建失败；模板出现 <code class="mono">fs.</code> 直接报错</td></tr>
+          <tr><td><b>异常路径</b></td><td>文章不存在 → <b>404</b>；已撤回 → <b>410</b></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="dim mt-l">详细设计只填五行——因为模型、契约、约束在前面都已经定了。</p>
+    <div class="deck-footer"><span class="dim2">第 14 节 · 详细设计</span><span class="slide-number" data-current="21" data-total="23"></span></div>
+    <div class="notes">S1 详细设计只有五行。这不是偷懒：内容模型来自领域图，异常路径来自状态图，约束落地来自七类检查——前面的工作做薄但做全，详细设计自然只剩一张表。</div>
+  </section>
+
+  <!-- 22. Conclusions -->
+  <section class="slide" data-deck-label="走查结论">
+    <p class="kicker">结论 · 五条</p>
+    <h2 class="h2">走完十四个环节，记住五句话</h2>
+    <ul class="grid g1 anim-stagger-list mt-l" style="list-style:none;padding:0;margin:0;gap:14px" data-anim-target>
+      <li class="card card-accent"><h4>① 小项目不用减步骤，只需每步更薄</h4><p class="dim">十四个环节一个没省，但每步只有一两张表、一两张图。</p></li>
+      <li class="card card-accent"><h4>② 需求阶段的两个决策决定了整个架构</h4><p class="dim">评论判为外部构件、内容以 Git 为唯一真相——这两条一定，后端就不需要了。</p></li>
+      <li class="card card-accent"><h4>③ 状态图生成了契约</h4><p class="dim">"撤回 → 410"不是从架构图来的，是从状态图来的。</p></li>
+      <li class="card card-accent"><h4>④ 一致性核对抓出了真缺口</h4><p class="dim">统计构件三张图对不上，说明架构没落地，不是画错图。</p></li>
+      <li class="card card-accent"><h4>⑤ 复用会回退</h4><p class="dim">GA 换成 Umami，正好演示了活动图里"换构件"那条边。</p></li>
+    </ul>
+    <div class="deck-footer"><span class="dim2">第五部分 · 走查结论</span><span class="slide-number" data-current="22" data-total="23"></span></div>
+    <div class="notes">五条结论，每条都对应走查中的一个真实瞬间。核心信息：方法论不分项目大小，分的是每一步的厚度；而图与图之间的对账，比任何一张图本身都值钱。</div>
+  </section>
+
+  <!-- 23. Thanks -->
+  <section class="slide center tc" data-deck-label="谢谢">
+    <div>
+      <h1 class="h1 anim-fade-up" data-anim="fade-up" style="font-size:150px;line-height:1"><span class="gradient-text">谢谢</span></h1>
+      <p class="lede" style="margin:22px auto 0">需求定架构，图与图对账——<br>小项目也值得一次完整的走查。</p>
+      <div class="row mt-l" style="justify-content:center;gap:32px">
+        <div class="dim"><b>Metta Ling</b></div>
+        <div class="dim">《个人网站开发过程走查》</div>
+        <div class="dim">2026-10</div>
+      </div>
+      <p class="dim2 mt-l" style="font-size:13px">← → 翻页 · T 切主题 · F 全屏 · O 概览 · S 备注</p>
+    </div>
+    <div class="notes">收尾：回到开场那句话——改文章只改 Git，不碰服务器。所有图、表、契约，都是这一个约束推导出来的。谢谢。</div>
+  </section>
+
+</deck-stage>
+<script src="./_shared/runtime.js"></script>
+</body></html>
