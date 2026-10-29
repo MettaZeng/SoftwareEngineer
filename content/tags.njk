@@ -1,0 +1,33 @@
+---
+layout: base.njk
+pagination:
+  data: collections.tagList
+  size: 1
+  alias: tagItem
+permalink: "/tags/{{ tagItem.name }}/"
+title: "标签"
+description: "按标签归档的文章。"
+---
+
+<header class="page-head shell">
+  <p class="eyebrow">Tag</p>
+  <h1>标签：{{ tagItem.name }}</h1>
+  <p class="lede">共 {{ tagItem.count }} 篇文章</p>
+</header>
+
+<div class="shell">
+  <div class="post-list">
+    {% for post in tagItem.posts %}
+      {% include "components/post-card.njk" %}
+    {% endfor %}
+  </div>
+
+  <nav class="tag-index" aria-label="全部标签">
+    <h2>全部标签</h2>
+    <ul class="tags tags--cloud">
+      {% for tag in collections.tagList %}
+        <li><a class="tag{% if tag.name == tagItem.name %} tag--active{% endif %}" href="{{ tag.url }}">{{ tag.name }}<span class="tag__count">{{ tag.count }}</span></a></li>
+      {% endfor %}
+    </ul>
+  </nav>
+</div>

@@ -1,0 +1,20 @@
+---
+layout: base.njk
+permalink: /posts/
+title: "文章"
+description: "全部文章，按发布时间倒序。"
+---
+
+<header class="page-head shell">
+  <p class="eyebrow">Archive</p>
+  <h1>文章</h1>
+  <p class="lede">教学笔记、架构随笔，以及一些还没归类的东西。</p>
+</header>
+
+<div class="shell">
+  <div class="post-list">
+    {% for post in collections.posts %}
+      {% include "components/post-card.njk" %}
+    {% endfor %}
+  </div>
+</div>

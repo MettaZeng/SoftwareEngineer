@@ -1,0 +1,42 @@
+---
+layout: base.njk
+permalink: /search/
+title: "搜索"
+description: "站内全文搜索，索引由构建期生成。"
+---
+
+{% block head %}
+<link rel="stylesheet" href="/pagefind/pagefind-ui.css">
+{% endblock %}
+
+<div class="shell shell--narrow search-page" data-pagefind-ignore>
+  <header class="page-head">
+    <p class="eyebrow">Search</p>
+    <h1>搜索</h1>
+    <p class="lede">索引来自真实构建产物，无需外部搜索服务。</p>
+  </header>
+  <div id="search"></div>
+</div>
+
+{% block scripts %}
+<script src="/pagefind/pagefind-ui.js"></script>
+<script>
+  window.addEventListener("DOMContentLoaded", function () {
+    new PagefindUI({
+      element: "#search",
+      showSubResults: true,
+      showImages: false,
+      translations: {
+        placeholder: "搜索文章…",
+        clear_search: "清除",
+        load_more: "加载更多结果",
+        search_label: "在本站搜索",
+        zero_results: "没有找到包含 [SEARCH_TERM] 的结果",
+        many_results: "找到 [COUNT] 条包含 [SEARCH_TERM] 的结果",
+        one_result: "找到 [COUNT] 条包含 [SEARCH_TERM] 的结果",
+        searching: "正在搜索 [SEARCH_TERM]…"
+      }
+    });
+  });
+</script>
+{% endblock %}

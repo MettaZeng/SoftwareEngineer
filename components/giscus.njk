@@ -1,0 +1,19 @@
+{% if site.giscus.repo and site.giscus.repoId %}
+<section class="comments" aria-label="评论">
+  <h2 class="comments__title">讨论</h2>
+  <script src="https://giscus.app/client.js"
+          data-repo="{{ site.giscus.repo }}"
+          data-repo-id="{{ site.giscus.repoId }}"
+          data-category="{{ site.giscus.category }}"
+          data-category-id="{{ site.giscus.categoryId }}"
+          data-mapping="{{ site.giscus.mapping }}"
+          data-reactions-enabled="1"
+          data-emit-metadata="0"
+          data-input-position="top"
+          data-theme="preferred_color_scheme"
+          data-lang="zh-CN"
+          crossorigin="anonymous"
+          async>
+  </script>
+</section>
+{% endif %}

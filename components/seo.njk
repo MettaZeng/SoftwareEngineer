@@ -1,0 +1,15 @@
+{% set seoTitle = title if title else site.title %}
+{% set seoDescription = description if description else site.description %}
+{% set canonical = page.url | absoluteUrl(site.baseUrl) %}
+<title>{{ seoTitle }}{% if page.url != "/" %} · {{ site.title }}{% endif %}</title>
+<meta name="description" content="{{ seoDescription }}">
+<link rel="canonical" href="{{ canonical }}">
+{% if noindex %}<meta name="robots" content="noindex">{% endif %}
+<meta property="og:site_name" content="{{ site.title }}">
+<meta property="og:title" content="{{ seoTitle }}">
+<meta property="og:description" content="{{ seoDescription }}">
+<meta property="og:url" content="{{ canonical }}">
+<meta property="og:type" content="{% if layout == 'post.njk' %}article{% else %}website{% endif %}">
+{% if page.date %}<meta property="article:published_time" content="{{ page.date | isoDate }}">{% endif %}
+<meta name="twitter:card" content="summary">
+<meta name="generator" content="Eleventy">

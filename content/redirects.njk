@@ -1,0 +1,7 @@
+---
+permalink: /_redirects
+eleventyExcludeFromCollections: true
+---
+{% for from, to in redirects %}{{ from }} {{ to }} 301
+{% endfor %}{% for item in retired %}/posts/{{ item.slug }}/ 410!
+{% endfor %}

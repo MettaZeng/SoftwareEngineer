@@ -1,0 +1,20 @@
+---
+layout: base.njk
+permalink: /projects/
+title: "作品"
+description: "课程工具、教学实验与这个站点本身。"
+---
+
+<header class="page-head shell">
+  <p class="eyebrow">Work</p>
+  <h1>作品</h1>
+  <p class="lede">正在维护的项目，以及已经归档的实验。</p>
+</header>
+
+<div class="shell">
+  <div class="project-grid">
+    {% for project in collections.projects %}
+      {% include "components/project-card.njk" %}
+    {% endfor %}
+  </div>
+</div>

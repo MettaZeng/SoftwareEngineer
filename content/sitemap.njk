@@ -1,0 +1,29 @@
+---
+permalink: /sitemap.xml
+eleventyExcludeFromCollections: true
+---
+<?xml version="1.0" encoding="utf-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>{{ "/" | absoluteUrl(site.baseUrl) }}</loc></url>
+  <url><loc>{{ "/posts/" | absoluteUrl(site.baseUrl) }}</loc></url>
+  <url><loc>{{ "/projects/" | absoluteUrl(site.baseUrl) }}</loc></url>
+  <url><loc>{{ "/search/" | absoluteUrl(site.baseUrl) }}</loc></url>
+  {% for page in collections.pages %}
+  <url><loc>{{ page.url | absoluteUrl(site.baseUrl) }}</loc></url>
+  {% endfor %}
+  {% for post in collections.posts %}
+  <url>
+    <loc>{{ post.url | absoluteUrl(site.baseUrl) }}</loc>
+    <lastmod>{{ post.date | isoDate }}</lastmod>
+  </url>
+  {% endfor %}
+  {% for project in collections.projects %}
+  <url>
+    <loc>{{ project.url | absoluteUrl(site.baseUrl) }}</loc>
+    <lastmod>{{ project.date | isoDate }}</lastmod>
+  </url>
+  {% endfor %}
+  {% for tag in collections.tagList %}
+  <url><loc>{{ tag.url | absoluteUrl(site.baseUrl) }}</loc></url>
+  {% endfor %}
+</urlset>

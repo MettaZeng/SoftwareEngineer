@@ -1,0 +1,12 @@
+<article class="project-card">
+  <header class="project-card__head">
+    <h3><a href="{{ project.url }}">{{ project.data.name }}</a></h3>
+    <p class="project-card__stack">{{ project.data.stack | join(" · ") }}</p>
+  </header>
+  <p class="project-card__intro">{{ project.data.intro }}</p>
+  <footer class="project-card__actions">
+    <a class="more" href="{{ project.url }}">详情 →</a>
+    {% if project.data.demoUrl %}<a class="more" href="{{ project.data.demoUrl }}">演示</a>{% endif %}
+    {% if project.data.repoUrl %}<a class="more" href="{{ project.data.repoUrl }}">仓库</a>{% endif %}
+  </footer>
+</article>

@@ -1,0 +1,25 @@
+{% extends "layouts/base.njk" %}
+
+{% block content %}
+<article class="post shell shell--narrow" data-pagefind-body>
+  <header class="post-head">
+    <p class="post-meta">
+      <time datetime="{{ page.date | isoDate }}">{{ page.date | readableDate }}</time>
+      <span aria-hidden="true">·</span>
+      <span>{{ content | readingTime }} 分钟读完</span>
+    </p>
+    <h1>{{ title }}</h1>
+    {% if summary %}<p class="lede">{{ summary }}</p>{% endif %}
+    {% include "components/tag-list.njk" %}
+  </header>
+
+  <div class="prose">{{ content | safe }}</div>
+
+  <nav class="post-nav" aria-label="文章导航">
+    <a class="more" href="/posts/">← 全部文章</a>
+    <a class="more" href="/feed.xml">订阅 RSS</a>
+  </nav>
+
+  {% include "components/giscus.njk" %}
+</article>
+{% endblock %}

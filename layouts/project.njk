@@ -1,0 +1,17 @@
+{% extends "layouts/base.njk" %}
+
+{% block content %}
+<article class="project-page shell shell--narrow" data-pagefind-body>
+  <header class="project-head">
+    <p class="project-card__stack">{{ stack | join(" · ") }}</p>
+    <h1>{{ name }}</h1>
+    <p class="lede">{{ intro }}</p>
+    <div class="hero__actions">
+      {% if demoUrl %}<a class="btn" href="{{ demoUrl }}">在线演示</a>{% endif %}
+      {% if repoUrl %}<a class="btn btn--ghost" href="{{ repoUrl }}">源码仓库</a>{% endif %}
+      <a class="btn btn--ghost" href="/projects/">全部作品</a>
+    </div>
+  </header>
+  <div class="prose">{{ content | safe }}</div>
+</article>
+{% endblock %}
