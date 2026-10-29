@@ -20,6 +20,17 @@ export default function (eleventyConfig) {
   eleventyConfig.addPassthroughCopy({ static: "/" });
   eleventyConfig.addWatchTarget("./static/");
 
+  // 子路径部署时，给 markdown 正文里手写的 /xxx 链接补上 pathPrefix
+  // （模板中的链接由 url 过滤器处理，markdown 渲染结果不在其作用范围）
+  const basePath = process.env.SITE_BASE || "/";
+  eleventyConfig.addTransform("prefixInternalLinks", function (content, outputPath) {
+    if (basePath === "/" || !outputPath || !outputPath.endsWith(".html")) return content;
+    const prefix = basePath.replace(/\/$/, "");
+    return content.replace(/(href|src)="(\/(?!\/)[^"]*)"/g, (match, attr, href) =>
+      href.startsWith(`${prefix}/`) ? match : `${attr}="${prefix}${href}"`,
+    );
+  });
+
   /* ---------- 过滤器（纯函数，供模板使用） ---------- */
   eleventyConfig.addFilter("readableDate", (value) =>
     value ? dateFormatter.format(new Date(value)) : "",
