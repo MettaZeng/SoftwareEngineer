@@ -24,8 +24,8 @@ description: "Metta Ling 的研究方向、教学经历与技能清单。"
 ## 技能
 
 - 教育类：个别化教学、在线教学平台、超星平台AI实践、
-- 后端与数据：Python、Neo4j、SQLite
-- 工程化：Eleventy、Git、CI、静态托管
+- 技术类：面向对象方法、通信技术、AI应用
+- 人文类：心理咨询
 
 ## 教育背景
 
